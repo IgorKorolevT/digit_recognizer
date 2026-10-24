@@ -29,7 +29,8 @@ image = Image.new("L", (280, 280), "white")
 draw = ImageDraw.Draw(image)
 
 # === BUTTONS ===
-train_mnist = tk.Button(root, text="Train Mnist")
+train_mnist_btn = tk.Button(root, text="Train Mnist")
+predict_mnist_btn = tk.Button(root, text="Test Mnist")
 mode_btn = tk.Button(root, text=f"{core.mode.upper()}")
 ok_btn = tk.Button(root, text="OK")
 clear_btn = tk.Button(root, text="Очистити")
@@ -89,15 +90,27 @@ def process_image_listener():
     canvas.delete("all")
     draw.rectangle((0, 0, 280, 280), fill="white")
 
+
 def train_mnist_listener():
-    core.mnist()
+    status_label.config(text="🔄 Навчання MNIST...")
+    root.update()
+    core.train_mnist()
     mode_btn.config(text=f"{core.mode.upper()}")
+    status_label.config(text="✅ MNIST навчання завершено")
     root.update()
 
 
+def predict_mnist_listener():
+    status_label.config(text="🔄 Перевірка MNIST...")
+    root.update()
+    core.predict_mnist()
+    status_label.config(text="✅ Перевірка завершена (див. консоль)")
+    root.update()
+
 
 # === LISTENERS ===
-train_mnist.config(command=train_mnist_listener)
+train_mnist_btn.config(command=train_mnist_listener)
+predict_mnist_btn.config(command=predict_mnist_listener)
 canvas.bind("<B1-Motion>", paint)
 mode_btn.config(command=toggle_mode)
 ok_btn.config(command=process_image_listener)
@@ -109,7 +122,8 @@ WIDTH = 12
 FONT = ("serif", 12, "normal")
 FONT_LARGE = ("serif", 25)
 #
-train_mnist.config(bg="#DCDCDC", width=WIDTH, font=FONT)
+train_mnist_btn.config(bg="#DCDCDC", width=WIDTH, font=FONT)
+predict_mnist_btn.config(bg="#DCDCDC", width=WIDTH, font=FONT)
 canvas.config(width=280, height=280, bg="white")
 train_count.config(width=WIDTH, font=FONT_LARGE, justify=tk.CENTER)
 status_label.config(fg="green")
@@ -120,7 +134,8 @@ clear_btn.config(bg="#DCDCDC", font=FONT, width=WIDTH)
 quit_btn.config(bg="salmon", font=FONT, width=WIDTH)
 
 # === POSITION ===
-train_mnist.grid(row=0, column=0, columnspan=2)
+train_mnist_btn.grid(row=0, column=0)
+predict_mnist_btn.grid(row=0, column=1)
 quit_btn.grid(row=1, column=0)
 mode_btn.grid(row=1, column=1)
 train_count.grid(row=2, column=0, columnspan=2, pady=10)
@@ -141,4 +156,5 @@ y = int((screen_height / 2) - (window_height / 2))
 root.geometry(f"{window_width}x{window_height}+{x}+{y - 100}")
 
 # === START ===
-root.mainloop()
+if __name__ == "__main__":
+    root.mainloop()
